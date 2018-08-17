@@ -1,7 +1,5 @@
 # rundeck-ui-mods
 
-## Introduction
-
 [Rundeck](https://www.rundeck.com/) [UI plugin](https://rundeck.org/docs/developer/ui-plugins.html) that adds the following:
 * __Select All Options Button__
     - Provider: `select-all-options-button` 
