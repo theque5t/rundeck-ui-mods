@@ -25,3 +25,6 @@ mv rundeck-ui-mods-1.0.0-plugin.zip /var/lib/rundeck/libext
 ```sh
 service rundeckd restart
 ```
+
+## Credits
+* @jtobard for the [ui-plugin-examples](https://github.com/rundeck-plugins/ui-plugin-examples) repo that was cloned as a starting point
