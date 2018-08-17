@@ -1,0 +1,17 @@
+name: ${pluginName}
+version: ${pluginVersion}
+rundeckPluginVersion: 1.2
+author: ${pluginAuthor}
+date: ${pluginBuildDate}
+url: ${pluginUrl}
+providers:
+  - name: select-all-options-button
+    service: UI
+    plugin-type: ui
+    title: "Select All Options Button"
+    description: "Check all and uncheck all options in a multi-valued option"
+    ui:
+      - pages: ['scheduledExecution/show']
+        scripts:
+          - js/selectAllOptionsButton/buttonFunction.js
+          - js/selectAllOptionsButton/addButton.js

@@ -1,128 +1,54 @@
-import org.apache.tools.ant.filters.ReplaceTokens
+ext.pluginName = 'rundeck-ui-mods'
+ext.pluginAuthor = 'Trevor Highfill'
+ext.pluginBuildDate = new Date().format("yyyy-MM-dd'T'HH:mm:ssX")
+ext.pluginVersion = '1.0.0'
+ext.pluginUrl = 'https://github.com/theque5t/rundeck-ui-mods'
 
-plugins {
-    id 'com.bertramlabs.asset-pipeline' version '2.11.6'
-}
-ext.pluginName = "Rundeckpro UI Test"
-ext.pluginDescription = "Rundeck UI test"
-ext.sopsCopyright = "© 2017, Rundeck, Inc."
-ext.sopsUrl = "http://rundeck.com"
-ext.buildDateString=new Date().format("yyyy-MM-dd'T'HH:mm:ssX")
-ext.name="test"
-version="1.0"
+ext.pluginBaseName = "$project.name"
+ext.pluginFileName = ext.pluginBaseName + '-' + ext.pluginVersion + '-plugin'
+ext.pluginZipName = ext.pluginFileName + '.zip'
 
-
-
-
-assets {
-    verbose = true
-    minifyJs = false
-    minifyCss = false
-    enableSourceMaps = false
-    enableGzip = false
-    configOptions = [:]
-
-    minifyOptions = [
-            languageMode     : 'ES5',
-            targetLanguage   : 'ES5', //Can go from ES6 to ES5 for those bleeding edgers
-            optimizationLevel: 'SIMPLE',
-            angularPass      : false // Can use @ngInject annotation for Angular Apps
-    ]
-
-//    includes = [/*'css*//*.css', */'js/*.js']
-    excludes = [
-            '**/*.less',
-            '**/*.html',
-            'js/lib/*.js',
-            'js/lib/**/*.js'
-    ]
-
-    //for plugin packaging
-    packagePlugin = false //set to true if this is a library
-
-    //developmentRuntime can be turned off
-    developmentRuntime = true
-
-    //if you want to customize the jar task this task runs on you can specify a jarTaskName
-    jarTaskName = null
-
-    // Can add custom asset locations (directories or individual jar files)
-    from "${project.projectDir}/src/main/rdplugin/assets"
-    compileDir = "${project.buildDir}/assets/resources"
+task createBuildDir{
+    mkdir "build"
 }
 
-ext.archivesBaseName = "rundeck-$project.name"
-ext.archiveFilename = ext.archivesBaseName + '-' + version + '-plugin'
-
-defaultTasks 'build'
-
-configurations {
-    create('default')
+task createPluginRootDir{
+    mkdir "${projectDir}/build/${project.ext.pluginFileName}"
 }
 
-task pluginZip(type: Jar) {
-    destinationDir = file("build/distributions")
-    baseName = project.ext.archivesBaseName
-    version = project.version
-    classifier = 'plugin'
-    extension = 'zip'
-
-    from("${project.buildDir}/zip-contents") {
-        into(archiveFilename)
-        exclude "resources/manifest.properties"
+task copyPlugin (dependsOn: 'createBuildDir', type: Copy){
+    from("${projectDir}") {
+        include 'plugin.yaml'
+        expand(pluginName: "${project.ext.pluginName}",
+               pluginAuthor: "${project.ext.pluginAuthor}",
+               pluginBuildDate: "${project.ext.pluginBuildDate}",
+               pluginVersion: "${project.ext.pluginVersion}",
+               pluginUrl: "${project.ext.pluginUrl}")
     }
-
-    manifest {
-        attributes 'Rundeck-Plugin-Name': pluginName.toString(),
-                   'Rundeck-Plugin-Description': pluginDescription.toString(),
-                   'Rundeck-Plugin-Archive': 'true',
-                   'Rundeck-Plugin-File-Version': project.version,
-                   'Rundeck-Plugin-Author': sopsCopyright,
-                   'Rundeck-Plugin-URL': sopsUrl,
-                   'Rundeck-Plugin-Date': buildDateString
+    from (fileTree(dir: "${projectDir}")){
+        exclude('build')
+        exclude('docs')
+        exclude('plugin.yaml')
+        exclude('README.md')
+        exclude('**/*.gradle')
     }
+    into "${projectDir}/build/${project.ext.pluginFileName}"
 }
 
+task zipPlugin(dependsOn: 'copyPlugin', type: Zip){
+    from fileTree(dir: "${projectDir}/build")
+    exclude('**/*.zip')
+    archiveName "${project.ext.pluginZipName}"
+    destinationDir(file("${projectDir}/build"))
+} 
 
-task build(dependsOn: 'pluginZip') << {
-
+task cleanBuildExcess(dependsOn: 'zipPlugin', type: Delete){
+    delete "${projectDir}/build/${project.ext.pluginFileName}"
 }
 
-task clean(type: Delete) {
-    delete('build')
+task build(dependsOn: 'cleanBuildExcess'){
 }
 
-pluginZip.doFirst {
-    def assetsDir = "${project.buildDir}/assets/resources"
-    def assetsMap = new Properties()
-    def assetsManifest = file("${assetsDir}/manifest.properties")
-    assetsManifest.withInputStream(assetsMap.&load)
-    def tokens = assetsMap + [
-            version    : project.version,
-            date       : new Date().toString(),
-            author     : sopsCopyright,
-            url        : sopsUrl,
-            title      : pluginName,
-            description: pluginDescription,
-            name       : archivesBaseName.toString(),
-    ]
-    copy {
-        //load asset mapping
-        from(assetsDir) {
-            into 'resources'
-        }
-        from("${project.projectDir}/src/main/rdplugin") {
-            filter(ReplaceTokens, tokens: tokens)
-            exclude "assets"
-        }
-        into "${project.buildDir}/zip-contents"
-    }
-}
-
-project.pluginZip.dependsOn 'assetCompile'
-project.pluginZip.mustRunAfter 'assetCompile'
-
-
-artifacts {
-    add('default', pluginZip)
+task clean(type: Delete){
+    delete 'build'
 }

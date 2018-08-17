@@ -1,18 +1,29 @@
-# Hello World - UI plugin demo
+# rundeck-ui-mods
 
-This plugin includes some basic UI demostrations:
+## Introduction
 
-* Usage of i18n to get messages
-* Usage of javascript to modify Main Page
-* Usage of javascript + ajax request to modify Jobs list page
-* Usage of javascript + css to modify the execution page
+[Rundeck](https://www.rundeck.com/) [UI plugin](https://rundeck.org/docs/developer/ui-plugins.html) that adds the following:
+* __Select All Options Button__
+    - Provider: `select-all-options-button` 
+    - Description: `Adds a check/uncheck all button beneath all multi-valued options on a job execution page.`
+    - [Example](docs/en-US/selectAllOptionsButton/example.md)
 
-### Hello World.
-Display `Hello world` text from `messages.properties`, if the user change the language to Spanish on Rundeck, the message changes to `Hola Mundo`.
+## Installation
 
-### XKCD random image.
-On the jobs page, it adds on top of the job list, a random image from a source json.
-To retrieve this image, the code uses a ajax call to a local file, this can be replaced with a call to a webservice on the same server as the rundeck instance.
+1. Download the [plugin file](https://github.com/theque5t/rundeck-ui-mods/raw/master/build/rundeck-ui-mods-1.0.0-plugin.zip)
 
-### Panic mode
-On the execution page, changes the header to red when a failed execution is open.
+```sh
+wget "https://github.com/theque5t/rundeck-ui-mods/raw/master/build/rundeck-ui-mods-1.0.0-plugin.zip"
+```
+
+2. Put the plugin file, selectall-options-ui-plugin.zip, into the [plugin directory](https://rundeck.org/docs/developer/plugin-development.html)
+
+```sh
+mv rundeck-ui-mods-1.0.0-plugin.zip /var/lib/rundeck/libext
+```
+
+2. Restart the Rundeck service
+
+```sh
+service rundeckd restart
+```
