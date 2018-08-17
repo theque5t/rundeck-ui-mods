@@ -22,7 +22,7 @@ wget "https://github.com/theque5t/rundeck-ui-mods/raw/master/build/rundeck-ui-mo
 mv rundeck-ui-mods-1.0.0-plugin.zip /var/lib/rundeck/libext
 ```
 
-2. Restart the Rundeck service
+3. Restart the Rundeck service
 
 ```sh
 service rundeckd restart
