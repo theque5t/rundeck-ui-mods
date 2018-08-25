@@ -8,15 +8,11 @@ ext.pluginBaseName = "$project.name"
 ext.pluginFileName = ext.pluginBaseName + '-' + ext.pluginVersion + '-plugin'
 ext.pluginZipName = ext.pluginFileName + '.zip'
 
-task createBuildDir{
-    mkdir "build"
-}
-
 task createPluginRootDir{
-    mkdir "${projectDir}/build/${project.ext.pluginFileName}"
+    mkdir "${buildDir}/${project.ext.pluginFileName}"
 }
 
-task copyPlugin (dependsOn: 'createBuildDir', type: Copy){
+task copyPlugin (dependsOn: 'createPluginRootDir', type: Copy){
     from("${projectDir}") {
         include 'plugin.yaml'
         expand(pluginName: "${project.ext.pluginName}",
@@ -32,23 +28,23 @@ task copyPlugin (dependsOn: 'createBuildDir', type: Copy){
         exclude('README.md')
         exclude('**/*.gradle')
     }
-    into "${projectDir}/build/${project.ext.pluginFileName}"
+    into "${buildDir}/${project.ext.pluginFileName}"
 }
 
 task zipPlugin(dependsOn: 'copyPlugin', type: Zip){
-    from fileTree(dir: "${projectDir}/build")
+    from fileTree(dir: "${buildDir}")
     exclude('**/*.zip')
     archiveName "${project.ext.pluginZipName}"
-    destinationDir(file("${projectDir}/build"))
+    destinationDir(file("${buildDir}"))
 } 
 
 task cleanBuildExcess(dependsOn: 'zipPlugin', type: Delete){
-    delete "${projectDir}/build/${project.ext.pluginFileName}"
+    delete "${buildDir}/${project.ext.pluginFileName}"
 }
 
 task build(dependsOn: 'cleanBuildExcess'){
 }
 
 task clean(type: Delete){
-    delete 'build'
+    delete "${buildDir}"
 }
