@@ -21,13 +21,13 @@ jQuery(document).ready(function($) {
                 var inputs = formGroups[n1].getElementsByTagName('input');
                 var checkboxes = jQuery(inputs).filter('input:checkbox');
                 var helpBlock = formGroups[n1].getElementsByClassName('help-block');
-                var isMultiOptionList = checkboxes.length > 1;
+                var isMultiOptionList = jQuery(formGroups[n1]).find(".optionmultiarea ").length == 1;
                 var noSelectAllButtonExists = jQuery(inputs).filter('#selectAllOptionsButton'+n1).length == 0;
                 var hasOneHelpBlock = helpBlock.length == 1;
 
                 if (isMultiOptionList && noSelectAllButtonExists && hasOneHelpBlock){
                     var checkedBoxes = jQuery(checkboxes).filter(':checked').length;
-                    if (checkedBoxes != checkboxes.length){
+                    if (checkedBoxes != checkboxes.length || checkboxes.length == 0){
                         var value = "Check All";
                     }
                     else{
