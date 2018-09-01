@@ -4,7 +4,6 @@ selectAllOptionsButtonFunction = function (obj) {
 	var formGroupIndex = obj.id.substring(22);
 	var inputs = formGroups[formGroupIndex].getElementsByTagName('input');
 	var checkboxes = jQuery(inputs).filter('input:checkbox');
-	var checkedBoxes = jQuery(checkboxes).filter(':checked').length;
 	var button = jQuery(inputs).filter('input:button');
 
 	if(obj.value == "Check All"){
