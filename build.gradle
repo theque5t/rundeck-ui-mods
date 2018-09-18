@@ -24,6 +24,10 @@ task copyPlugin (dependsOn: 'createPluginRootDir', type: Copy){
                pluginUrl: "${project.ext.pluginUrl}")
     }
     from (fileTree(dir: "${projectDir}")){
+        exclude('.settings')
+        exclude('.vscode')
+        exclude('.gitignore')
+        exclude('.project')
         exclude('build')
         exclude('docs')
         exclude('plugin.yaml')
