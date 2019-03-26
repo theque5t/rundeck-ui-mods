@@ -14,7 +14,7 @@
 wget "https://github.com/theque5t/rundeck-ui-mods/raw/master/build/rundeck-ui-mods-1.0.0-plugin.zip"
 ```
 
-2. Put the plugin file, selectall-options-ui-plugin.zip, into the [plugin directory](https://rundeck.org/docs/developer/plugin-development.html)
+2. Put the plugin file, rundeck-ui-mods-1.0.0-plugin.zip, into the [plugin directory](https://rundeck.org/docs/developer/plugin-development.html)
 
 ```sh
 mv rundeck-ui-mods-1.0.0-plugin.zip /var/lib/rundeck/libext
